@@ -100,3 +100,5 @@
 // Modified fileFour.js - line 98
 // Modified fileFour.js - line 99
 // Modified fileFour.js - line 100
+// Modified: added kebab-case note
+// Modified: added kebab-case note

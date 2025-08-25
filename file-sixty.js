@@ -100,3 +100,4 @@
 // Modified fileSixty.js - line 98
 // Modified fileSixty.js - line 99
 // Modified fileSixty.js - line 100
+// Modified: added kebab-case note

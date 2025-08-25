@@ -100,3 +100,5 @@
 // Modified fileTen.js - line 98
 // Modified fileTen.js - line 99
 // Modified fileTen.js - line 100
+// Modified: added kebab-case note
+// Modified: added kebab-case note

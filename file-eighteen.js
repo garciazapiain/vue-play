@@ -100,3 +100,5 @@
 // Modified fileEighteen.js - line 98
 // Modified fileEighteen.js - line 99
 // Modified fileEighteen.js - line 100
+// Modified: added kebab-case note
+// Modified: added kebab-case note

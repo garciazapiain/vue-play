@@ -100,3 +100,4 @@
 // Modified fileHundred.js - line 98
 // Modified fileHundred.js - line 99
 // Modified fileHundred.js - line 100
+// Modified: added kebab-case note

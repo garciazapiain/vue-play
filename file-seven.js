@@ -100,3 +100,5 @@
 // Modified fileSeven.js - line 98
 // Modified fileSeven.js - line 99
 // Modified fileSeven.js - line 100
+// Modified: added kebab-case note
+// Modified: added kebab-case note

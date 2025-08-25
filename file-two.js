@@ -100,3 +100,5 @@
 // Modified fileTwo.js - line 98
 // Modified fileTwo.js - line 99
 // Modified fileTwo.js - line 100
+// Modified: added kebab-case note
+// Modified: added kebab-case note

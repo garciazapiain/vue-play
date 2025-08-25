@@ -100,3 +100,5 @@
 // Modified fileFive.js - line 98
 // Modified fileFive.js - line 99
 // Modified fileFive.js - line 100
+// Modified: added kebab-case note
+// Modified: added kebab-case note

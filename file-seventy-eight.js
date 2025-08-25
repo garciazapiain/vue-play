@@ -100,3 +100,4 @@
 // Modified fileSeventyEight.js - line 98
 // Modified fileSeventyEight.js - line 99
 // Modified fileSeventyEight.js - line 100
+// Modified: added kebab-case note

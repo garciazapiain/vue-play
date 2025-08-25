@@ -116,3 +116,5 @@
 // Modified fileOne.js - line 98
 // Modified fileOne.js - line 99
 // Modified fileOne.js - line 100
+// Modified: added kebab-case note
+// Modified: added kebab-case note
