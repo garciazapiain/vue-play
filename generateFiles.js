@@ -1,23 +1,45 @@
 const fs = require("fs");
 
-// mapping numbers to words for 2..100
-const words = [
-  "Two","Three","Four","Five","Six","Seven","Eight","Nine","Ten",
-  "Eleven","Twelve","Thirteen","Fourteen","Fifteen","Sixteen","Seventeen","Eighteen","Nineteen",
-  "Twenty","TwentyOne","TwentyTwo","TwentyThree","TwentyFour","TwentyFive","TwentySix","TwentySeven","TwentyEight","TwentyNine",
-  "Thirty","ThirtyOne","ThirtyTwo","ThirtyThree","ThirtyFour","ThirtyFive","ThirtySix","ThirtySeven","ThirtyEight","ThirtyNine",
-  "Forty","FortyOne","FortyTwo","FortyThree","FortyFour","FortyFive","FortySix","FortySeven","FortyEight","FortyNine",
-  "Fifty","FiftyOne","FiftyTwo","FiftyThree","FiftyFour","FiftyFive","FiftySix","FiftySeven","FiftyEight","FiftyNine",
-  "Sixty","SixtyOne","SixtyTwo","SixtyThree","SixtyFour","SixtyFive","SixtySix","SixtySeven","SixtyEight","SixtyNine",
-  "Seventy","SeventyOne","SeventyTwo","SeventyThree","SeventyFour","SeventyFive","SeventySix","SeventySeven","SeventyEight","SeventyNine",
-  "Eighty","EightyOne","EightyTwo","EightyThree","EightyFour","EightyFive","EightySix","EightySeven","EightyEight","EightyNine",
-  "Ninety","NinetyOne","NinetyTwo","NinetyThree","NinetyFour","NinetyFive","NinetySix","NinetySeven","NinetyEight","NinetyNine",
-  "Hundred"
-];
+function numberToKebab(n) {
+  const under20 = ["zero","one","two","three","four","five","six","seven","eight","nine","ten","eleven","twelve","thirteen","fourteen","fifteen","sixteen","seventeen","eighteen","nineteen"];
+  const tens = {20:"twenty",30:"thirty",40:"forty",50:"fifty",60:"sixty",70:"seventy",80:"eighty",90:"ninety"};
+  if (n < 20) return under20[n];
+  if (n === 100) return "hundred";
+  if (n % 10 === 0) return tens[n];
+  const t = Math.floor(n / 10) * 10;
+  const u = n % 10;
+  return `${tens[t]}-${under20[u]}`;
+}
 
-words.forEach(word => {
-  const fileName = `file${word}.js`;
-  const content = `// This is ${fileName}\n`;
-  fs.writeFileSync(fileName, content);
-  console.log(`Created ${fileName}`);
-});
+function kebabToCamel(k) {
+  return k.split("-").map((w, i) => w[0].toUpperCase() + w.slice(1)).join("");
+}
+
+let updated = 0;
+for (let i = 1; i <= 100; i++) {
+  const kebab = numberToKebab(i);      // e.g., "twenty-one"
+  const camel = kebabToCamel(kebab);   // e.g., "TwentyOne"
+  const candidates = [
+    `file-${kebab}.js`,  // kebab-case
+    `file${camel}.js`,   // CamelCase
+    `file${i}.js`,       // numeric
+  ];
+
+  const file = candidates.find(f => fs.existsSync(f));
+  if (!file) {
+    console.warn(`Skipped ${i}: none of ${candidates.join(", ")} found`);
+    continue;
+  }
+
+  // Build 100 comment lines
+  let comments = "";
+  for (let j = 1; j <= 100; j++) {
+    comments += `// Modified ${file} - line ${j}\n`;
+  }
+
+  fs.appendFileSync(file, comments);
+  console.log(`Updated ${file}`);
+  updated++;
+}
+
+console.log(`Done. Updated ${updated} file(s).`);
