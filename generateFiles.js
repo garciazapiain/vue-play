@@ -1,45 +1,49 @@
 const fs = require("fs");
 
-function numberToKebab(n) {
-  const under20 = ["zero","one","two","three","four","five","six","seven","eight","nine","ten","eleven","twelve","thirteen","fourteen","fifteen","sixteen","seventeen","eighteen","nineteen"];
-  const tens = {20:"twenty",30:"thirty",40:"forty",50:"fifty",60:"sixty",70:"seventy",80:"eighty",90:"ninety"};
-  if (n < 20) return under20[n];
-  if (n === 100) return "hundred";
-  if (n % 10 === 0) return tens[n];
-  const t = Math.floor(n / 10) * 10;
-  const u = n % 10;
-  return `${tens[t]}-${under20[u]}`;
+// 1..100 as words (CamelCase) so we can map words -> numbers
+const words = [
+  "One","Two","Three","Four","Five","Six","Seven","Eight","Nine","Ten",
+  "Eleven","Twelve","Thirteen","Fourteen","Fifteen","Sixteen","Seventeen","Eighteen","Nineteen",
+  "Twenty","TwentyOne","TwentyTwo","TwentyThree","TwentyFour","TwentyFive","TwentySix","TwentySeven","TwentyEight","TwentyNine",
+  "Thirty","ThirtyOne","ThirtyTwo","ThirtyThree","ThirtyFour","ThirtyFive","ThirtySix","ThirtySeven","ThirtyEight","ThirtyNine",
+  "Forty","FortyOne","FortyTwo","FortyThree","FortyFour","FortyFive","FortySix","FortySeven","FortyEight","FortyNine",
+  "Fifty","FiftyOne","FiftyTwo","FiftyThree","FiftyFour","FiftyFive","FiftySix","FiftySeven","FiftyEight","FiftyNine",
+  "Sixty","SixtyOne","SixtyTwo","SixtyThree","SixtyFour","SixtyFive","SixtySix","SixtySeven","SixtyEight","SixtyNine",
+  "Seventy","SeventyOne","SeventyTwo","SeventyThree","SeventyFour","SeventyFive","SeventySix","SeventySeven","SeventyEight","SeventyNine",
+  "Eighty","EightyOne","EightyTwo","EightyThree","EightyFour","EightyFive","EightySix","EightySeven","EightyEight","EightyNine",
+  "Ninety","NinetyOne","NinetyTwo","NinetyThree","NinetyFour","NinetyFive","NinetySix","NinetySeven","NinetyEight","NinetyNine",
+  "Hundred"
+];
+
+// Map "TwentyOne" -> 21, etc.
+const wordToNum = new Map(words.map((w, i) => [w.toLowerCase(), i + 1]));
+
+// Normalize the part after "file" and before ".js"
+// - handles "fileTwentyOne.js"  -> "twentyone"
+// - handles "file-twenty-one.js" -> "twentyone"
+function normalizeToken(token) {
+  return token.replace(/^-/, "").toLowerCase().replace(/-/g, "");
 }
 
-function kebabToCamel(k) {
-  return k.split("-").map((w, i) => w[0].toUpperCase() + w.slice(1)).join("");
+// Convert token to number if possible (supports numeric too)
+function tokenToNumber(token) {
+  if (/^\d+$/.test(token)) return parseInt(token, 10);
+  // try word forms
+  const camelLike = normalizeToken(token);
+  return wordToNum.get(camelLike) ?? NaN;
 }
 
-let updated = 0;
-for (let i = 1; i <= 100; i++) {
-  const kebab = numberToKebab(i);      // e.g., "twenty-one"
-  const camel = kebabToCamel(kebab);   // e.g., "TwentyOne"
-  const candidates = [
-    `file-${kebab}.js`,  // kebab-case
-    `file${camel}.js`,   // CamelCase
-    `file${i}.js`,       // numeric
-  ];
+const files = fs.readdirSync(".").filter(f => /^file.*\.js$/i.test(f));
 
-  const file = candidates.find(f => fs.existsSync(f));
-  if (!file) {
-    console.warn(`Skipped ${i}: none of ${candidates.join(", ")} found`);
-    continue;
+let count = 0;
+files.forEach(file => {
+  const token = file.replace(/^file/i, "").replace(/\.js$/i, "");
+  const n = tokenToNumber(token);
+  if (!Number.isNaN(n) && n <= 100) {
+    fs.appendFileSync(file, "// Modified: added kebab-case note\n");
+    console.log(`Updated ${file}`);
+    count++;
   }
+});
 
-  // Build 100 comment lines
-  let comments = "";
-  for (let j = 1; j <= 100; j++) {
-    comments += `// Modified ${file} - line ${j}\n`;
-  }
-
-  fs.appendFileSync(file, comments);
-  console.log(`Updated ${file}`);
-  updated++;
-}
-
-console.log(`Done. Updated ${updated} file(s).`);
+console.log(`Done. Updated ${count} file(s) up to Fifty.`);
